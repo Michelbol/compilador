@@ -18,7 +18,7 @@
 #define T_VARIABLE 9
 #define PRINTS 10
 
-typedef struct STRUCT{
+typedef struct NO{
     int typeFlag;
     void *content;
     struct TREE *left;
@@ -31,78 +31,83 @@ typedef struct TREE{
 } TREE;
 
 typedef struct treeList {
-    struct TREE *first;
-    struct TREE *last;
+    TREE *first;
+    TREE *last;
 } TREELIST;
 
 TREELIST *treeList;
 
 void startTree(){
-    treeList = (TREELIST *) malloc(sizeof(treeList));
+    treeList = (TREELIST *) malloc(sizeof(&treeList));
     treeList->first = NULL;
     treeList->last = NULL;
 }
 
-void newNode(TREE *tree){
+void newNode(struct TREE *tree){
+    TREE *addTree = (TREE *) malloc(sizeof(&addTree));
+    *addTree = *tree;
     if(treeList->first == NULL){
-        treeList->first = tree;
-        treeList->last = tree;
+        treeList->first = addTree;
+        treeList->last = addTree;
         return;
     }
-    treeList->last->next = tree;
-    treeList->last = tree;
+    treeList->last->next = addTree;
+    treeList->last = addTree;
 }
 
-TREE *createNodeSumInt(int first, int second){
-    TREE *firstNumber = (TREE *) malloc(sizeof(firstNumber));
-    firstNumber->root->typeFlag = INT;
-    firstNumber->root->content = (int *)first;
+TREE *createNodeInt(const int *number){
+    TREE *numberTree = (TREE *) malloc(sizeof(&numberTree));
+    NO *root = (NO *) malloc(sizeof(&root));
+    int *value = (int *) malloc(sizeof(value));
+    *value = *number;
+    numberTree->root = root;
+    numberTree->root->content = value;
+    numberTree->root->typeFlag = INT;
+    return numberTree;
+}
+TREE *createNodeFloat(const float *number){
+    TREE *numberTree = (TREE *) malloc(sizeof(&numberTree));
+    NO *root = (NO *) malloc(sizeof(&root));
+    float *value = (float *) malloc(sizeof(value));
+    *value = *number;
+    numberTree->root = root;
+    numberTree->root->content = value;
+    numberTree->root->typeFlag = FLOAT;
+    return numberTree;
+}
 
-    TREE *secondNumber = (TREE *) malloc(sizeof(secondNumber));
-    secondNumber->root->typeFlag = INT;
-    secondNumber->root->content = (int *)second;
-
-    TREE *operation = (TREE *) malloc(sizeof(operation));
+TREE *createNodeSumInt(struct TREE *first, struct TREE *second){
+    TREE *firstNumber = (TREE *) malloc(sizeof(&firstNumber));
+    TREE *secondNumber = (TREE *) malloc(sizeof(&secondNumber));
+    TREE *operation = (TREE * ) malloc(sizeof(&operation));
+    firstNumber = first;
+    secondNumber = second;
     operation->root->typeFlag = SUM;
-    operation->root->left = firstNumber;
-    operation->root->right = secondNumber;
+    operation->root->right = firstNumber;
+    operation->root->left = secondNumber;
     newNode(operation);
-    return operation;
 }
 
-void createNodePrintInt(int *number){
-    TREE *numberPrint = (TREE *) malloc(sizeof(numberPrint));
-    NO *no = (NO *) malloc(sizeof(no));
-    no->typeFlag = INT;
-    no->content = number;
-//    no->left = NULL;
-//    no->right = NULL;
-    numberPrint->root = no;
-    numberPrint->next = NULL;
-
-    TREE *operation = (TREE *) malloc(sizeof(operation));
-    NO *no2 = (NO *) malloc(sizeof(no2));
+void createNodePrintInt(struct TREE *numberPrint){
+    TREE *operation = (TREE *) malloc(sizeof(&operation));
+    NO *no2 = (NO *) malloc(sizeof(&no2));
+    TREE *number = (TREE * ) malloc(sizeof(&numberPrint));
+    *number = *numberPrint;
     no2->typeFlag = PRINTS;
-    no2->right = numberPrint;
-//    no2->left = NULL;
-//    no2->content = NULL;
+    no2->right = number;
     operation->root = no2;
     operation->next = NULL;
     newNode(operation);
 }
-
-void createNodePrintFloat(float *number){
-    TREE *numberPrint = (TREE *) malloc(sizeof(numberPrint));
-    NO *no = (NO *) malloc(sizeof(no));
-    no->typeFlag = FLOAT;
-    no->content = number;
-    numberPrint->root = no;
-
-    TREE *operation = (TREE *) malloc(sizeof(operation));
-    NO *no2 = (NO *) malloc(sizeof(no2));
+void createNodePrintFloat(struct TREE *numberPrint){
+    TREE *operation = (TREE *) malloc(sizeof(&operation));
+    NO *no2 = (NO *) malloc(sizeof(&no2));
+    TREE *number = (TREE * ) malloc(sizeof(&numberPrint));
+    *number = *numberPrint;
     no2->typeFlag = PRINTS;
-    no2->right = numberPrint;
+    no2->right = number;
     operation->root = no2;
+    operation->next = NULL;
     newNode(operation);
 }
 
@@ -126,11 +131,14 @@ void *executeNo(NO *no){
                 break;
             }
         }
+        case SUM:
+            printf("é uma soma");
+            break;
     }
 }
 
 void execute(){
-    TREE *executeList = treeList->last;
+    TREE *executeList = treeList->first;
     while(executeList != NULL){
         executeNo(executeList->root);
         executeList = executeList->next;

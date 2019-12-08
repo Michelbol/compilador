@@ -1,2 +1,6 @@
 .idea/
 cmake-build-debug/
+front_end
+front_end.lex.c
+front_end.tab.c
+front_end.tab.h
